@@ -29,6 +29,7 @@ lazy val frontend = (project in file("frontend"))
   .settings(
     Seq(
       assemblyJarName in assembly := "frontend.jar",
+      mainClass in assembly := Some("cluster.FrontendMain"),
       assemblyMergeStrategy in assembly := {
         case "application.conf" => MergeStrategy.concat
         case "JS_DEPENDENCIES" => MergeStrategy.concat
@@ -46,6 +47,7 @@ lazy val backend = (project in file("backend"))
   .settings(
     Seq(
       assemblyJarName in assembly := "backend.jar",
+      mainClass in assembly := Some("cluster.BackendMain"),
       assemblyMergeStrategy in assembly := {
         case "application.conf" => MergeStrategy.concat
         case "JS_DEPENDENCIES" => MergeStrategy.concat
