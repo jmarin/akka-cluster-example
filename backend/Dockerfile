@@ -10,4 +10,6 @@ USER daemon
 
 ENTRYPOINT ["java", "-jar", "backend.jar"]
 
+EXPOSE 2552
+
 COPY target/scala-2.12/backend.jar .
