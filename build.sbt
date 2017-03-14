@@ -1,22 +1,21 @@
-name := "akka-cluster-example"
+import BuildSettings._
+import Dependencies._
 
-organization := "Marin Incorporated"
 
-scalaVersion := "2.12.1"
+lazy val akkaClusterExample = (project in file("."))
+  .settings(buildSettings:_*)
+  .aggregate(frontend, backend)
 
-scalacOptions ++= Seq(
-  "-unchecked",
-  "-deprecation",
-  "-target:jvm-1.8",
-  "-feature",
-  "-encoding", "UTF-8"
-)
+lazy val frontend = (project in file("frontend"))
+  .settings(buildSettings:_*)
+  .settings(
+    libraryDependencies ++= Seq(akkaHttp, akkaHttpJson, akkaCluster)
+  )
 
-val akkaVersion = "2.4.17"
-val akkaHttpVersion = "10.0.4"
+lazy val backend = (project in file("backend"))
+  .settings(buildSettings:_*)
+  .settings(
+    libraryDependencies ++= Seq(akkaCluster)
+  )
 
-libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-cluster" % akkaVersion,
-  "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
-)
 
