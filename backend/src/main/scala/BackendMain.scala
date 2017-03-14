@@ -1,17 +1,17 @@
 package cluster
 
 import akka.actor.ActorSystem
-import api.FrontendApi
 import com.typesafe.config.ConfigFactory
+import processing.SampleActor
 
-object FrontendMain {
+object BackendMain {
   def main(args: Array[String]): Unit = {
     val port = if (args.isEmpty) "0" else args(0)
     val config = ConfigFactory.parseString(s"akka.remote.netty.tcp.port=$port")
-      .withFallback(ConfigFactory.parseString("akka.cluster.roles = [frontend]"))
+      .withFallback(ConfigFactory.parseString("akka.cluster.roles = [backend]"))
       .withFallback(ConfigFactory.load())
     val actorSystemName = config.getString("cluster.name")
     val system = ActorSystem(actorSystemName, config)
-    system.actorOf(FrontendApi.props(), "frontend-api")
+    system.actorOf(SampleActor.props(), "sample-actor")
   }
 }
