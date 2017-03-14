@@ -8,6 +8,9 @@ RUN mkdir -p target && chmod -R a+w target
 
 USER daemon
 
-ENTRYPOINT ["java", "-jar", "backend.jar"]
+ENTRYPOINT ["java", "-jar", "seed.jar"]
 
-COPY target/scala-2.12/backend.jar .
+EXPOSE 2552
+
+COPY target/scala-2.12/seed.jar .
+

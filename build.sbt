@@ -14,15 +14,32 @@ lazy val akkaClusterExample = (project in file("."))
         case x =>
           val oldStrategy = (assemblyMergeStrategy in assembly).value
           oldStrategy(x)
-      },
-      mainClass in assembly := Some("cluster.AkkaCluster")
+      }
     )
   )
-  .dependsOn(frontend, backend)
-  .aggregate(frontend, backend)
+  .dependsOn(seed, frontend, backend)
+  .aggregate(seed, frontend, backend)
 
 lazy val config = (project in file("config"))
   .settings(buildSettings:_*)
+
+lazy val seed = (project in file("seed"))
+  .settings(buildSettings:_*)
+  .settings(
+    Seq(
+      assemblyJarName in assembly := "seed.jar",
+      mainClass in assembly := Some("cluster.Main"),
+      assemblyMergeStrategy in assembly := {
+        case "application.conf" => MergeStrategy.concat
+        case "JS_DEPENDENCIES" => MergeStrategy.concat
+        case x =>
+          val oldStrategy = (assemblyMergeStrategy in assembly).value
+          oldStrategy(x)
+      },
+      libraryDependencies ++= Seq(akkaCluster)
+    )
+  )
+  .dependsOn(config)
 
 lazy val frontend = (project in file("frontend"))
   .settings(buildSettings:_*)

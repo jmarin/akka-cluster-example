@@ -10,7 +10,7 @@ USER daemon
 
 ENTRYPOINT ["java", "-jar", "frontend.jar"]
 
-EXPOSE 8080 2552
+EXPOSE 8080
 
 COPY target/scala-2.12/frontend.jar .
 
