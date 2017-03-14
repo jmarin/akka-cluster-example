@@ -21,6 +21,8 @@ lazy val akkaClusterExample = (project in file("."))
   .dependsOn(frontend, backend)
   .aggregate(frontend, backend)
 
+lazy val config = (project in file("config"))
+  .settings(buildSettings:_*)
 
 lazy val frontend = (project in file("frontend"))
   .settings(buildSettings:_*)
@@ -37,6 +39,7 @@ lazy val frontend = (project in file("frontend"))
       libraryDependencies ++= Seq(akkaHttp, akkaHttpJson, akkaCluster)
     )
   )
+  .dependsOn(config)
 
 lazy val backend = (project in file("backend"))
   .settings(buildSettings:_*)
@@ -53,5 +56,6 @@ lazy val backend = (project in file("backend"))
       libraryDependencies ++= Seq(akkaCluster)
     )
   )
+  .dependsOn(config)
 
 

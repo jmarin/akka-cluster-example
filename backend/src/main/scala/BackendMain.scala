@@ -12,6 +12,7 @@ object BackendMain {
       .withFallback(ConfigFactory.load())
     val actorSystemName = config.getString("cluster.name")
     val system = ActorSystem(actorSystemName, config)
-    system.actorOf(SampleActor.props(), "sample-actor")
+    val actor = system.actorOf(SampleActor.props(), "sample-actor")
+    actor ! "Hello Backend"
   }
 }
