@@ -8,13 +8,11 @@ node('') {
         sh "${tool name: 'sbt 0.13.1', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin/sbt clean test assembly"
     }
 
-    docker.withRegistry('https://dtr.cfpb.gov', 'dtr') {
+    docker.withRegistry('https://hub.docker.com', 'dtr') {
       stage('Docker Build') {
           sh "git rev-parse HEAD > .git/commit-id"
           def commit_id = readFile('.git/commit-id').trim()
           println(commit_id)
-
-          sh "cd seed"
 
           def seedImage = docker.build("dtr.cfpb.gov/akka-cluster-example-seed:${env.BUILD_TAG}", "./seed")
           seedImage.push('latest')
