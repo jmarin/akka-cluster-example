@@ -7,9 +7,11 @@ pipeline {
 
     stages {
         stage('Initialize') {
-            sh '''
-              echo "PATH = $PATH"
-            '''
+            steps {
+                sh '''
+                  echo "PATH = $PATH"
+                '''
+            }
         }
 
         stage('Build') {
