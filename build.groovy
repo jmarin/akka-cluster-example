@@ -3,6 +3,7 @@ pipeline {
 
     tools {
         jdk 'jdk8'
+        org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation 'sbt-0.13.13'
     }
 
     stages {
