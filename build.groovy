@@ -16,7 +16,7 @@ node('') {
 
           sh "cd seed"
 
-          def seedImage = docker.build("dtr.cfpb.gov/akka-cluster-example-seed:${env.BUILD_TAG}")
+          def seedImage = docker.build("dtr.cfpb.gov/akka-cluster-example-seed:${env.BUILD_TAG}", "./seed")
           seedImage.push('latest')
       }
     }
