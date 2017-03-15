@@ -8,7 +8,7 @@ node('platform-ops') {
         sh "${tool name: 'sbt 0.13.1', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin/sbt clean test assembly"
     }
 
-    docker.withRegistry('https://dtr.cfpb.gov', 'jenkins') {
+    docker.withRegistry('https://dtr.cfpb.gov', 'svc_jenkins') {
       stage('Docker Build') {
           sh "git rev-parse HEAD > .git/commit-id"
           def commit_id = readFile('.git/commit-id').trim()
