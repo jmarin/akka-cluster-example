@@ -6,7 +6,7 @@ object BuildSettings {
   val buildVersion = "1.0.0"
   val buildScalaVersion = "2.12.1"
 
-  val buildSettings = Defaults.coreDefaultSettings ++
+  val clusterBuildSettings = Defaults.coreDefaultSettings ++
    Seq(
      organization := buildOrganization,
      version := buildVersion,

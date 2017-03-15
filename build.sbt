@@ -4,7 +4,7 @@ import sbt.Keys.libraryDependencies
 
 
 lazy val akkaClusterExample = (project in file("."))
-  .settings(buildSettings:_*)
+  .settings(clusterBuildSettings:_*)
   .settings(
     Seq(
       assemblyJarName in assembly := "akka-cluster.jar",
@@ -21,10 +21,10 @@ lazy val akkaClusterExample = (project in file("."))
   .aggregate(seed, frontend, backend)
 
 lazy val config = (project in file("config"))
-  .settings(buildSettings:_*)
+  .settings(clusterBuildSettings:_*)
 
 lazy val seed = (project in file("seed"))
-  .settings(buildSettings:_*)
+  .settings(clusterBuildSettings:_*)
   .settings(
     Seq(
       assemblyJarName in assembly := "seed.jar",
@@ -42,7 +42,7 @@ lazy val seed = (project in file("seed"))
   .dependsOn(config)
 
 lazy val frontend = (project in file("frontend"))
-  .settings(buildSettings:_*)
+  .settings(clusterBuildSettings:_*)
   .settings(
     Seq(
       assemblyJarName in assembly := "frontend.jar",
@@ -60,7 +60,7 @@ lazy val frontend = (project in file("frontend"))
   .dependsOn(config)
 
 lazy val backend = (project in file("backend"))
-  .settings(buildSettings:_*)
+  .settings(clusterBuildSettings:_*)
   .settings(
     Seq(
       assemblyJarName in assembly := "backend.jar",

@@ -15,13 +15,13 @@ services:
     ports:
       - '8080:8080'
     environment:
-      CLUSTER_IP: ""
+      CLUSTER_IP: seed
       BIND_HOSTNAME: 0.0.0.0
       SEED_PORT_1600_TCP_ADDR: seed
 
   backend:
     build: backend
     environment:
-      CLUSTER_IP: ""
+      CLUSTER_IP: seed
       BIND_HOSTNAME: 0.0.0.0
       SEED_PORT_1600_TCP_ADDR: seed
