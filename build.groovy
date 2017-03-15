@@ -15,10 +15,11 @@ node {
           //sh "cp backend/target/scala-2.12/backend.jar backend/."
 
           def branch_name = ${env.BRANCH_NAME}.minus('origin/')
+          println branch_name
 
-          def commit_id = readFile(".git/refs/heads/${env.BRANCH_NAME}").trim()
-          def seedImage = docker.build("dtr.cfpb.gov/akka-cluster-example-seed:${commit_id}", "--build-arg PACKAGE_VERSION=${commit_id} ./seed")
-          seedImage.push()
+          //def commit_id = readFile(".git/refs/heads/${branch_name}").trim()
+          //def seedImage = docker.build("dtr.cfpb.gov/akka-cluster-example-seed:${commit_id}", "--build-arg PACKAGE_VERSION=${commit_id} ./seed")
+          //seedImage.push()
       }
     }
 }
