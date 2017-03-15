@@ -10,11 +10,11 @@ node {
 
     docker.withRegistry('https://dtr.cfpb.gov', 'dtr') {
       stage('Docker Build') {
-          sh "cp seed/target/scala-2.12/seed.jar seed/."
-          sh "cp frontend/target/scala-2.12/frontend.jar frontend/."
-          sh "cp backend/target/scala-2.12/backend.jar backend/."
+          //sh "cp seed/target/scala-2.12/seed.jar seed/."
+          //sh "cp frontend/target/scala-2.12/frontend.jar frontend/."
+          //sh "cp backend/target/scala-2.12/backend.jar backend/."
 
-          def commit_id = readFile('.git/commit-id').trim()
+          def commit_id = readFile(".git/refs/heads/${env.BRANCH_NAME}").trim()
           def seedImage = docker.build("dtr.cfpb.gov/akka-cluster-example-seed:${commit_id}", "--build-arg PACKAGE_VERSION=${commit_id} ./seed")
           seedImage.push()
       }
