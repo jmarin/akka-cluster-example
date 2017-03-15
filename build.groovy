@@ -5,7 +5,7 @@ node {
 
     stage('Scala Build') {
         // assumes you have the sbt plugin installed and created an sbt installation named 'sbt-0.13.13'
-        sh "${tool name: 'sbt 0.13.13', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin/sbt clean test assembly"
+        sh "${tool name: 'sbt 0.13.1', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin/sbt clean test assembly"
     }
 
     docker.withRegistry('https://dtr.cfpb.gov', 'dtr') {
