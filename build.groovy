@@ -1,4 +1,4 @@
-node {
+node('platform-ops') {
     stage('Git') {
         git 'https://github.com/jmarin/akka-cluster-example.git'
     }
