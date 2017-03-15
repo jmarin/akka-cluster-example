@@ -1,4 +1,4 @@
-node('platform-ops') {
+node('') {
     stage('Git') {
         git 'https://github.com/jmarin/akka-cluster-example.git'
     }
@@ -8,7 +8,7 @@ node('platform-ops') {
         sh "${tool name: 'sbt 0.13.1', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin/sbt clean test assembly"
     }
 
-    docker.withRegistry('https://dtr.cfpb.gov', 'svc_jenkins') {
+    docker.withRegistry('https://dtr.cfpb.gov', 'dtr') {
       stage('Docker Build') {
           sh "git rev-parse HEAD > .git/commit-id"
           def commit_id = readFile('.git/commit-id').trim()
