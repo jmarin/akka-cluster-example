@@ -19,9 +19,8 @@ node {
           def commit_id = readFile('.git/commit-id').trim()
           println(commit_id)
 
-          //def commit_id = readFile(".git/refs/heads/${branch_name}").trim()
-          //def seedImage = docker.build("dtr.cfpb.gov/akka-cluster-example-seed:${commit_id}", "--build-arg PACKAGE_VERSION=${commit_id} ./seed")
-          //seedImage.push()
+          def seedImage = docker.build("dtr.cfpb.gov/akka-cluster-example-seed:${commit_id}", "--build-arg PACKAGE_VERSION=${commit_id} ./seed")
+          seedImage.push()
       }
     }
 }
