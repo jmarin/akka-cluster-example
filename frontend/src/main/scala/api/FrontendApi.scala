@@ -6,6 +6,7 @@ import akka.event.{ Logging, LoggingAdapter }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+import api.actors.ClusterListener
 import api.http.{ HttpApi, Service }
 import com.typesafe.config.ConfigFactory
 
@@ -28,7 +29,9 @@ class FrontendApi extends HttpApi with Service {
   override implicit val materializer: ActorMaterializer = ActorMaterializer()
   override implicit val ec: ExecutionContext = context.dispatcher
 
-  override val paths: Route = routes(s"$name")
+  val clusterListener = system.actorOf(ClusterListener.props())
+
+  override val paths: Route = routes(s"$name", clusterListener)
   override val http: Future[Http.ServerBinding] = Http(system).bindAndHandle(
     paths,
     host,
