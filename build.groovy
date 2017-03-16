@@ -14,8 +14,9 @@ node('') {
           def commit_id = readFile('.git/commit-id').trim()
           println(commit_id)
 
-          def seedImage = docker.build("jmarin/akka-cluster-example-seed", "./seed")
-          seedImage.push()
+          def seedImage = docker.build("jmarin/akka-cluster-example-seed:${commit_id}", "./seed")
+          seedImage.push(commit_id)
+          seedImage.push('latest')
       }
     }
 }
