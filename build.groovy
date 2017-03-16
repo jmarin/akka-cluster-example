@@ -1,4 +1,7 @@
 node('') {
+
+    def project_name = "akka-cluster-example"
+
     stage('Git') {
         git 'https://github.com/jmarin/akka-cluster-example.git'
     }
@@ -9,12 +12,12 @@ node('') {
     }
 
     docker.withRegistry('', 'dtr') {
-      stage('Docker Build') {
+      stage('Seed Docker Build') {
           sh "git rev-parse HEAD > .git/commit-id"
           def commit_id = readFile('.git/commit-id').trim()
           println(commit_id)
 
-          def seedImage = docker.build("jmarin/akka-cluster-example-seed:${commit_id}", "./seed")
+          def seedImage = docker.build("jmarin/${project_name}-seed:${commit_id}", "./seed")
           seedImage.push(commit_id)
           seedImage.push('latest')
       }
