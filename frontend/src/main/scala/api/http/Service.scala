@@ -15,7 +15,7 @@ import akka.stream.ActorMaterializer
 import akka.http.scaladsl.server.Directives._
 import akka.util.Timeout
 import api.actors.ClusterListener.GetState
-import api.model.Status
+import api.model.{ NodeDetails, Status }
 import api.protocol.ApiProtocol
 
 import scala.concurrent.ExecutionContext
@@ -48,12 +48,12 @@ trait Service extends ApiProtocol {
   def clusterMembers(clusterListener: ActorRef) = {
     path("nodes") {
       get {
-        val fMembers = for {
-          xs <- (clusterListener ? GetState).mapTo[Set[Member]]
-          addresses = xs.map(m => m.address.toString)
-        } yield addresses
-        onComplete(fMembers) {
-          case Success(addresses) => complete(ToResponseMarshallable(addresses))
+        val fDetails = for {
+          members <- (clusterListener ? GetState).mapTo[Set[Member]]
+          details = members.map(m => NodeDetails(m.status.toString, m.roles.toList, m.uniqueAddress.address.host.getOrElse(""), m.uniqueAddress.address.port.getOrElse(0)))
+        } yield details
+        onComplete(fDetails) {
+          case Success(nodeListDetails) => complete(ToResponseMarshallable(nodeListDetails))
           case Failure(_) => complete(HttpResponse(StatusCodes.InternalServerError))
         }
       }
