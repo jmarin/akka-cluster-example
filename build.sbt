@@ -1,7 +1,9 @@
+import sbt._
+import Keys._
+import sbtassembly.AssemblyPlugin.autoImport._
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import BuildSettings._
 import Dependencies._
-import sbt.Keys.libraryDependencies
-
 
 lazy val akkaClusterExample = (project in file("."))
   .settings(clusterBuildSettings:_*)
@@ -18,7 +20,7 @@ lazy val akkaClusterExample = (project in file("."))
     )
   )
   .dependsOn(seed, frontend, backend)
-  .aggregate(seed, frontend, backend)
+  .aggregate(seed, frontend, backend, web)
 
 lazy val config = (project in file("config"))
   .settings(clusterBuildSettings:_*)
@@ -41,6 +43,17 @@ lazy val seed = (project in file("seed"))
   )
   .dependsOn(config)
 
+lazy val web = (project in file("web"))
+  .enablePlugins(ScalaJSPlugin)
+  .settings(clusterBuildSettings)
+  .settings(
+    Seq(
+      libraryDependencies ++= Seq(
+        "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+      )
+    )
+  )
+
 lazy val frontend = (project in file("frontend"))
   .settings(clusterBuildSettings:_*)
   .settings(
@@ -54,7 +67,13 @@ lazy val frontend = (project in file("frontend"))
           val oldStrategy = (assemblyMergeStrategy in assembly).value
           oldStrategy(x)
       },
-      libraryDependencies ++= Seq(akkaHttp, akkaHttpJson, akkaCluster)
+      libraryDependencies ++= Seq(akkaHttp, akkaHttpJson, akkaCluster),
+      resourceGenerators in Compile += Def.task {
+        val f1 = (fastOptJS in Compile in web).value
+        val f2 = (packageScalaJSLauncher in Compile in web).value
+        Seq(f1.data, f2.data)
+      }.taskValue,
+      watchSources ++= (watchSources in web).value
     )
   )
   .dependsOn(config)
