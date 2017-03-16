@@ -1,0 +1,36 @@
+{
+  "id": "akka-cluster-example-seed",
+  "mem": 256,
+  "cpus": 0.5,
+  "instances": 1,
+  "uris": [
+    "file:///etc/docker.tar.gz"
+  ],
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "jmarin/akka-cluster-example-seed:latest",
+      "parameters": [
+        { "key": "add-host", "value": "dockerhost:172.17.42.1" }
+      ],
+      "forcePullImage": true,
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 2552,
+          "hostPort": 0,
+          "servicePort": 10052,
+          "protocol": "tcp"
+        }
+      ]
+    }
+  },
+  "env": {
+    "CLUSTER_IP": "dockerhost",
+    "APP_PORT": "10052",
+    "BIND_HOSTNAME": "0.0.0.0"
+  },
+  "labels": {
+    "HAPROXY_GROUP": "internal"
+  }
+}
