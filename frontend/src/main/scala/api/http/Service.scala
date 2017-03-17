@@ -18,6 +18,7 @@ import akka.util.{ ByteString, Timeout }
 import api.actors.ClusterListener.GetState
 import api.model.{ FileUploaded, NodeDetails, Status }
 import api.protocol.ApiProtocol
+import common.CommonMessages.{ ProcessLine, Received }
 
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }
@@ -34,7 +35,7 @@ trait Service extends ApiProtocol {
 
   val splitLines = Framing.delimiter(ByteString("\n"), 2048, allowTruncation = true)
 
-  def rootPath = {
+  def rootPath(fileReceiver: ActorRef) = {
     get {
       pathSingleSlash {
         getFromResource("web/index.html")
@@ -52,7 +53,7 @@ trait Service extends ApiProtocol {
               val uploadedF = byteSource
                 .via(splitLines)
                 .map(_.utf8String)
-                .map { e => println(e); e }
+                .mapAsync(parallelism = 2)(line => (fileReceiver ? ProcessLine(line)).mapTo[Received.type])
                 .runWith(Sink.ignore)
 
               onComplete(uploadedF) {
@@ -64,8 +65,6 @@ trait Service extends ApiProtocol {
               }
 
           }
-
-          //complete("File Uploaded")
         }
       }
   }
@@ -99,6 +98,9 @@ trait Service extends ApiProtocol {
     }
   }
 
-  def routes(apiName: String, clusterListener: ActorRef) = encodeResponse(rootPath ~ statusPath(apiName)) ~ encodeResponse(clusterMembers(clusterListener))
+  def routes(apiName: String, clusterListener: ActorRef, fileReceiver: ActorRef) =
+    encodeResponse(rootPath(fileReceiver) ~
+      statusPath(apiName)) ~
+      encodeResponse(clusterMembers(clusterListener))
 
 }
