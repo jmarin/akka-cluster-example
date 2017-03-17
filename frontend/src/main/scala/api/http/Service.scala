@@ -36,7 +36,9 @@ trait Service extends ApiProtocol {
       pathSingleSlash {
         getFromResource("web/index.html")
       } ~
-        path("web-fastopt.js")(getFromResource("web-fastopt.js"))
+        path("web-jsdeps.js")(getFromResource("web-jsdeps.js")) ~
+        path("web-fastopt.js")(getFromResource("web-fastopt.js")) ~
+        path("web-launcher.js")(getFromResource("web-launcher.js"))
     }
   }
 

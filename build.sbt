@@ -48,8 +48,15 @@ lazy val web = (project in file("web"))
   .settings(clusterBuildSettings)
   .settings(
     Seq(
+      persistLauncher in Compile := true,
       libraryDependencies ++= Seq(
-        "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+        "org.scala-js" %%% "scalajs-dom" % "0.9.1",
+        "com.github.japgolly.scalajs-react" %%% "core" % "1.0.0-RC1"
+      ),
+      jsDependencies ++= Seq(
+        "org.webjars.bower" % "react" % "15.4.2" / "react-with-addons.js" minified "react-with-addons.min.js" commonJSName "React",
+        "org.webjars.bower" % "react" % "15.4.2" / "react-dom.js" minified "react-dom.min.js" dependsOn "react-with-addons.js" commonJSName "ReactDOM",
+        "org.webjars.bower" % "react" % "15.4.2" / "react-dom-server.js" minified  "react-dom-server.min.js" dependsOn "react-dom.js" commonJSName "ReactDOMServer"
       )
     )
   )
@@ -71,7 +78,8 @@ lazy val frontend = (project in file("frontend"))
       resourceGenerators in Compile += Def.task {
         val f1 = (fastOptJS in Compile in web).value
         val f2 = (packageScalaJSLauncher in Compile in web).value
-        Seq(f1.data, f2.data)
+        val f3 = (packageJSDependencies in Compile in web).value
+        Seq(f1.data, f2.data, f3)
       }.taskValue,
       watchSources ++= (watchSources in web).value
     )
