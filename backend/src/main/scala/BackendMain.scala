@@ -1,7 +1,9 @@
 package cluster
 
 import akka.actor.ActorSystem
+import akka.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
 import com.typesafe.config.ConfigFactory
+import common.CommonMessages.KillYourself
 import processing.{ FileProcessor, SampleActor }
 
 object BackendMain {
@@ -12,7 +14,16 @@ object BackendMain {
     val system = ActorSystem(actorSystemName, config)
     val actor = system.actorOf(SampleActor.props(), "sample-actor")
     actor ! "Hello Backend"
-    system.actorOf(FileProcessor.props(), "file-processor")
+
+    system.actorOf(
+      ClusterSingletonManager.props(
+        singletonProps = FileProcessor.props(),
+        terminationMessage = KillYourself,
+        settings = ClusterSingletonManagerSettings(system).withRole("backend")
+      ), "file-processor"
+    )
+
+    //system.actorOf(FileProcessor.props(), "file-processor")
 
   }
 }

@@ -1,7 +1,7 @@
 package processing
 
 import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
-import common.CommonMessages.fileProcessingTopic
+import common.CommonMessages.{ KillYourself, ProcessLine, fileProcessingTopic }
 import akka.cluster.pubsub.DistributedPubSub
 import akka.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
 
@@ -21,10 +21,11 @@ class FileProcessor extends Actor with ActorLogging {
     case SubscribeAck(Subscribe(topic, None, `self`)) ⇒
       log.info(s"subscribing to $topic")
 
-    case msg: String =>
-      log.info(msg)
-
-    case msg: Any =>
+    case msg: ProcessLine =>
       log.info(msg.toString)
+
+    case KillYourself =>
+      context stop self
+
   }
 }

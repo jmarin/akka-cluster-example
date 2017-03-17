@@ -58,6 +58,7 @@ trait Service extends ApiProtocol {
 
               onComplete(uploadedF) {
                 case Success(_) =>
+                  println("UPLOADED")
                   complete(ToResponseMarshallable(FileUploaded(metadata.fileName)))
                 case Failure(error) =>
                   log.error(error.getLocalizedMessage)

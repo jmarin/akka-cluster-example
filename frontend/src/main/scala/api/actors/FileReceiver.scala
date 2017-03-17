@@ -18,7 +18,6 @@ class FileReceiver extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case msg: ProcessLine =>
-      //log.info(msg.toString)
       mediator ! Publish(fileProcessingTopic, msg)
       sender() ! Received
   }
