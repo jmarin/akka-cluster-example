@@ -12,6 +12,7 @@ object Dependencies {
   val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck % "test"
   val logback = "ch.qos.logback" % "logback-classic" % Version.logback
   val akkaCluster = "com.typesafe.akka" %% "akka-cluster" % Version.akkaVersion
+  val akkaPubSub = "com.typesafe.akka" %% "akka-cluster-tools" % Version.akkaVersion
   val akkaHttp = "com.typesafe.akka" %% "akka-http" % Version.akkaHttpVersion
   val akkaHttpJson = "com.typesafe.akka" %% "akka-http-spray-json" % Version.akkaHttpVersion
   val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % Version.akkaVersion % "test"

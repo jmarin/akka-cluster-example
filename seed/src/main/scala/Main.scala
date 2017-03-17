@@ -1,6 +1,7 @@
 package cluster
 
 import akka.actor.ActorSystem
+import akka.cluster.pubsub.DistributedPubSub
 import com.typesafe.config.ConfigFactory
 
 object Main {
@@ -8,6 +9,7 @@ object Main {
     val config = ConfigFactory.parseString("akka.cluster.roles = [seed]")
       .withFallback(ConfigFactory.load())
     val actorSystemName = config.getString("cluster.name")
-    ActorSystem(actorSystemName, config)
+    val system = ActorSystem(actorSystemName, config)
+    DistributedPubSub(system).mediator
   }
 }

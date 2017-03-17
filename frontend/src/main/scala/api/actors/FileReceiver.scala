@@ -1,7 +1,9 @@
 package api.actors
 
 import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
-import common.CommonMessages.{ ProcessLine, Received }
+import common.CommonMessages.{ ProcessLine, Received, fileProcessingTopic }
+import akka.cluster.pubsub.DistributedPubSub
+import akka.cluster.pubsub.DistributedPubSubMediator.Publish
 
 object FileReceiver {
   def props(): Props = Props(new FileReceiver)
@@ -11,9 +13,13 @@ object FileReceiver {
 }
 
 class FileReceiver extends Actor with ActorLogging {
+
+  val mediator = DistributedPubSub(context.system).mediator
+
   override def receive: Receive = {
     case msg: ProcessLine =>
-      log.info(msg.toString)
+      //log.info(msg.toString)
+      mediator ! Publish(fileProcessingTopic, msg)
       sender() ! Received
   }
 }

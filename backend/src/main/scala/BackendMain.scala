@@ -2,7 +2,7 @@ package cluster
 
 import akka.actor.ActorSystem
 import com.typesafe.config.ConfigFactory
-import processing.SampleActor
+import processing.{ FileProcessor, SampleActor }
 
 object BackendMain {
   def main(args: Array[String]): Unit = {
@@ -12,5 +12,7 @@ object BackendMain {
     val system = ActorSystem(actorSystemName, config)
     val actor = system.actorOf(SampleActor.props(), "sample-actor")
     actor ! "Hello Backend"
+    system.actorOf(FileProcessor.props(), "file-processor")
+
   }
 }

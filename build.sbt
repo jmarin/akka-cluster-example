@@ -6,6 +6,7 @@ import BuildSettings._
 import Dependencies._
 
 
+val clusterDeps = Seq(akkaCluster, akkaPubSub)
 val testDeps = Seq(scalaTest, scalaCheck, akkaTestkit)
 
 lazy val akkaClusterExample = (project in file("."))
@@ -41,7 +42,7 @@ lazy val seed = (project in file("seed"))
           val oldStrategy = (assemblyMergeStrategy in assembly).value
           oldStrategy(x)
       },
-      libraryDependencies ++= Seq(akkaCluster)
+      libraryDependencies ++= clusterDeps
     )
   )
   .dependsOn(config)
@@ -77,7 +78,7 @@ lazy val frontend = (project in file("frontend"))
           val oldStrategy = (assemblyMergeStrategy in assembly).value
           oldStrategy(x)
       },
-      libraryDependencies ++= Seq(akkaHttp, akkaHttpJson, akkaCluster),
+      libraryDependencies ++= Seq(akkaHttp, akkaHttpJson) ++ clusterDeps,
       resourceGenerators in Compile += Def.task {
         val f1 = (fastOptJS in Compile in web).value
         val f2 = (packageScalaJSLauncher in Compile in web).value
@@ -102,7 +103,7 @@ lazy val backend = (project in file("backend"))
           val oldStrategy = (assemblyMergeStrategy in assembly).value
           oldStrategy(x)
       },
-      libraryDependencies ++= Seq(akkaCluster) ++ testDeps
+      libraryDependencies ++= clusterDeps ++ testDeps
     )
   )
   .dependsOn(config)
