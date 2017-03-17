@@ -31,7 +31,7 @@
     }
 
 
-     function startUpload(files) {
+    function startUpload(files) {
         console.log(files)
 
         event.stopPropagation(); // Stop stuff happening
@@ -60,7 +60,7 @@
                  if(typeof data.error === 'undefined')
                    {
                    // Success so call function to process the form
-                     console.log(data);
+                     updateView(data);
                    }
                  else
                    {
@@ -79,6 +79,14 @@
 
 
 
+    function updateView(data) {
+
+      var fileName = data.name;
+      $(".list-group")
+        .empty()
+        .append("<a href='#' class='list-group-item list-group-item-success'><span class='badge alert-success pull-right'>Success</span>" + fileName + "</a>")
+
+    }
 
 
 
