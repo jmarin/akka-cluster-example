@@ -22,8 +22,5 @@ object BackendMain {
         settings = ClusterSingletonManagerSettings(system).withRole("backend")
       ), "file-processor"
     )
-
-    //system.actorOf(FileProcessor.props(), "file-processor")
-
   }
 }

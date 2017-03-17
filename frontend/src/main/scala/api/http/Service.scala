@@ -16,9 +16,10 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.scaladsl.{ Framing, Sink }
 import akka.util.{ ByteString, Timeout }
 import api.actors.ClusterListener.GetState
+import api.actors.FileReceiver.Uploaded
 import api.model.{ FileUploaded, NodeDetails, Status }
 import api.protocol.ApiProtocol
-import common.CommonMessages.{ ProcessLine, Received }
+import common.CommonMessages.{ EndReceiving, ProcessLine, Received }
 
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }
@@ -50,15 +51,21 @@ trait Service extends ApiProtocol {
         path("upload") {
           fileUpload("file") {
             case (metadata, byteSource) =>
-              val uploadedF = byteSource
+              val processedF = byteSource
                 .via(splitLines)
                 .map(_.utf8String)
                 .mapAsync(parallelism = 2)(line => (fileReceiver ? ProcessLine(line)).mapTo[Received.type])
+                .map { e => println(e); e }
                 .runWith(Sink.ignore)
 
+              val uploadedF = for {
+                _ <- processedF
+                uploaded <- (fileReceiver ? EndReceiving).mapTo[Uploaded.type]
+              } yield uploaded
+
               onComplete(uploadedF) {
-                case Success(_) =>
-                  println("UPLOADED")
+                case Success(uploaded) =>
+                  println(uploaded)
                   complete(ToResponseMarshallable(FileUploaded(metadata.fileName)))
                 case Failure(error) =>
                   log.error(error.getLocalizedMessage)
