@@ -31,8 +31,17 @@ trait Service extends ApiProtocol {
 
   implicit val timeout: Timeout = Timeout(5.seconds)
 
-  def rootPath(name: String) = {
-    pathSingleSlash {
+  def rootPath = {
+    get {
+      pathSingleSlash {
+        getFromResource("web/index.html")
+      } ~
+        path("web-fastopt.js")(getFromResource("web-fastopt.js"))
+    }
+  }
+
+  def statusPath(name: String) = {
+    path("status") {
       get {
         complete {
           val now = Instant.now.toString
@@ -60,6 +69,6 @@ trait Service extends ApiProtocol {
     }
   }
 
-  def routes(apiName: String, clusterListener: ActorRef) = encodeResponse(rootPath(apiName)) ~ encodeResponse(clusterMembers(clusterListener))
+  def routes(apiName: String, clusterListener: ActorRef) = encodeResponse(rootPath ~ statusPath(apiName)) ~ encodeResponse(clusterMembers(clusterListener))
 
 }
