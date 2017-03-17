@@ -2,17 +2,17 @@ package processing
 
 import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
 import processing.CommonMessages.ProcessLine
-import processing.WordAggregator.WordStats
+import processing.WordProcessor.WordStats
 
-object WordAggregator {
+object WordProcessor {
   case class WordStats(count: Long)
-  def props(): Props = Props(new WordAggregator)
-  def createWordAggregator(system: ActorSystem): ActorRef = {
-    system.actorOf(WordAggregator.props())
+  def props(): Props = Props(new WordProcessor)
+  def createWordProcessor(system: ActorSystem): ActorRef = {
+    system.actorOf(WordProcessor.props())
   }
 }
 
-class WordAggregator extends Actor with ActorLogging {
+class WordProcessor extends Actor with ActorLogging {
   var wordCount: Long = 0L
 
   override def receive: Receive = {

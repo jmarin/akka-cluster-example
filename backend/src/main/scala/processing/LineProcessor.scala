@@ -4,37 +4,32 @@ import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import processing.CommonMessages._
-import processing.LineAggregator.LineDetails
-import processing.WordAggregator.WordStats
+import processing.LineProcessor.LineDetails
+import processing.WordProcessor.WordStats
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-object LineAggregator {
-  case class LineDetails(lineNumber: Long, wordCount: Long)
-  def props(): Props = Props(new LineAggregator)
-  def createLineAggregator(system: ActorSystem): ActorRef = {
-    system.actorOf(LineAggregator.props())
+object LineProcessor {
+  case class LineDetails(lineCount: Long, wordCount: Long)
+  def props(wordProcessor: ActorRef): Props = Props(new LineProcessor(wordProcessor))
+  def createLineProcessor(system: ActorSystem, wordProcessor: ActorRef): ActorRef = {
+    system.actorOf(LineProcessor.props(wordProcessor))
   }
 }
 
-class LineAggregator extends Actor with ActorLogging {
-
-  var lineId = 0L
+class LineProcessor(wordProcessor: ActorRef) extends Actor with ActorLogging {
 
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val timeout = Timeout(5.seconds)
 
-  val wordAggregator = context.actorOf(WordAggregator.props())
-
   override def receive: Receive = {
     case ProcessLine(line) =>
       val origin = sender()
-      lineId += 1
-      val fWords = (wordAggregator ? ProcessLine(line)).mapTo[WordStats]
+      val fWords = (wordProcessor ? ProcessLine(line)).mapTo[WordStats]
       val fLineDetails = for {
         wordStats <- fWords
-        lineDetails = LineDetails(lineId, wordStats.count)
+        lineDetails = LineDetails(1, wordStats.count)
       } yield lineDetails
 
       fLineDetails pipeTo origin
