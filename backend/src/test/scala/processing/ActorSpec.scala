@@ -12,7 +12,6 @@ class ActorSpec extends WordSpec with MustMatchers with BeforeAndAfterAll {
   implicit val system = ActorSystem("test", config)
 
   override def afterAll(): Unit = {
-    println("Terminating system")
     system.terminate()
   }
 

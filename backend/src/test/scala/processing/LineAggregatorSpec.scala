@@ -1,9 +1,8 @@
 package processing
 
 import akka.testkit.TestProbe
-import processing.CommonMessages.{ GetState, ProcessLine }
+import processing.CommonMessages.ProcessLine
 import processing.LineAggregator._
-import processing.TestData._
 
 class LineAggregatorSpec extends ActorSpec {
 
