@@ -6,19 +6,61 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="main.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 
 
-<div class="app-container" id="playground">
-</div>
+<!--<div class="app-container" id="playground">
+</div> -->
 
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Akka Cluster Example</strong> <small>File Processor</small></div>
+        <div class="panel-body">
+
+            <!-- Standard Form -->
+            <h4>Select file from your computer</h4>
+            <form action="" method="post" enctype="multipart/form-data" id="js-upload-form">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <input type="file" name="files[]" id="js-upload-files">
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary" id="js-upload-submit">Upload file</button>
+                </div>
+            </form>
+
+            <!-- Drop Zone -->
+            <h4>Or drag and drop file below</h4>
+            <div class="upload-drop-zone" id="drop-zone">
+               Drag and drop file here
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                    <span class="sr-only">60% Complete</span>
+                </div>
+            </div>
+
+            <!-- Upload Finished -->
+            <div class="js-upload-finished">
+                <h3>Processed files</h3>
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-success"><span class="badge alert-success pull-right">Success</span>image-01.jpg</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- /container -->
+
 
 <script type="text/javascript" src="web-jsdeps.js"></script>
 <script type="text/javascript" src="web-fastopt.js"></script>
 <script type="text/javascript" src="web-launcher.js"></script>
+<script type="text/javascript" src="main.js"></script>
 
 </body>
 </html>

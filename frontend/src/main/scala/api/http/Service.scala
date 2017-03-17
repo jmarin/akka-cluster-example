@@ -13,9 +13,10 @@ import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
 import spray.json._
 import akka.stream.ActorMaterializer
 import akka.http.scaladsl.server.Directives._
-import akka.util.Timeout
+import akka.stream.scaladsl.{ Framing, Sink }
+import akka.util.{ ByteString, Timeout }
 import api.actors.ClusterListener.GetState
-import api.model.{ NodeDetails, Status }
+import api.model.{ FileUploaded, NodeDetails, Status }
 import api.protocol.ApiProtocol
 
 import scala.concurrent.ExecutionContext
@@ -31,6 +32,8 @@ trait Service extends ApiProtocol {
 
   implicit val timeout: Timeout = Timeout(5.seconds)
 
+  val splitLines = Framing.delimiter(ByteString("\n"), 2048, allowTruncation = true)
+
   def rootPath = {
     get {
       pathSingleSlash {
@@ -38,8 +41,33 @@ trait Service extends ApiProtocol {
       } ~
         path("web-jsdeps.js")(getFromResource("web-jsdeps.js")) ~
         path("web-fastopt.js")(getFromResource("web-fastopt.js")) ~
-        path("web-launcher.js")(getFromResource("web-launcher.js"))
-    }
+        path("web-launcher.js")(getFromResource("web-launcher.js")) ~
+        path("main.css")(getFromResource("web/css/main.css")) ~
+        path("main.js")(getFromResource("web/js/main.js"))
+    } ~
+      post {
+        path("upload") {
+          fileUpload("file") {
+            case (metadata, byteSource) =>
+              val uploadedF = byteSource
+                .via(splitLines)
+                .map(_.utf8String)
+                .map { e => println(e); e }
+                .runWith(Sink.ignore)
+
+              onComplete(uploadedF) {
+                case Success(_) =>
+                  complete(ToResponseMarshallable(FileUploaded(metadata.fileName)))
+                case Failure(error) =>
+                  log.error(error.getLocalizedMessage)
+                  complete(HttpResponse(StatusCodes.InternalServerError))
+              }
+
+          }
+
+          //complete("File Uploaded")
+        }
+      }
   }
 
   def statusPath(name: String) = {
