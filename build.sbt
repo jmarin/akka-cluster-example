@@ -5,6 +5,9 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import BuildSettings._
 import Dependencies._
 
+
+val testDeps = Seq(scalaTest, scalaCheck, akkaTestkit)
+
 lazy val akkaClusterExample = (project in file("."))
   .settings(clusterBuildSettings:_*)
   .settings(
@@ -99,7 +102,7 @@ lazy val backend = (project in file("backend"))
           val oldStrategy = (assemblyMergeStrategy in assembly).value
           oldStrategy(x)
       },
-      libraryDependencies ++= Seq(akkaCluster)
+      libraryDependencies ++= Seq(akkaCluster) ++ testDeps
     )
   )
   .dependsOn(config)
