@@ -9,7 +9,7 @@ import api.actors.FileUploader.Uploaded
 object FileUploader {
   case class Uploaded(lines: Int)
   def props(): Props = Props(new FileUploader)
-  def createFileReceiver(system: ActorSystem): ActorRef = {
+  def createFileUploader(system: ActorSystem): ActorRef = {
     system.actorOf(FileUploader.props())
   }
 }
