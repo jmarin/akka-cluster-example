@@ -5,17 +5,15 @@ import common.CommonMessages.{ KillYourself, ProcessLine, fileProcessingTopic }
 import akka.cluster.pubsub.DistributedPubSub
 import akka.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
 
-object FileProcessor {
+object ProcessorManager {
   case class FileDetails(lineCount: Int)
-  def props(): Props = Props(new FileProcessor)
+  def props(): Props = Props(new ProcessorManager)
   def createFileProcessor(system: ActorSystem): ActorRef = {
-    system.actorOf(FileProcessor.props())
+    system.actorOf(ProcessorManager.props())
   }
 }
 
-class FileProcessor extends Actor with ActorLogging {
-
-  var lineCount: Int = 0
+class ProcessorManager extends Actor with ActorLogging {
 
   val mediator = DistributedPubSub(context.system).mediator
   mediator ! Subscribe(fileProcessingTopic, self)
@@ -24,9 +22,8 @@ class FileProcessor extends Actor with ActorLogging {
     case SubscribeAck(Subscribe(topic, None, `self`)) ⇒
       log.info(s"Subscribed to $topic")
 
-//    case msg: ProcessLine =>
-//      log.info(msg.toString)
-//      lineCount += 1
+    case msg: ProcessLine =>
+      log.info(msg.toString)
 
     case KillYourself =>
       context stop self

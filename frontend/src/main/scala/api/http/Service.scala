@@ -36,7 +36,7 @@ trait Service extends ApiProtocol {
 
   val splitLines = Framing.delimiter(ByteString("\n"), 2048, allowTruncation = true)
 
-  def rootPath(fileReceiver: ActorRef) = {
+  def rootPath(fileUploader: ActorRef) = {
     get {
       pathSingleSlash {
         getFromResource("web/index.html")
@@ -54,13 +54,13 @@ trait Service extends ApiProtocol {
               val processedF = byteSource
                 .via(splitLines)
                 .map(_.utf8String)
-                .mapAsync(parallelism = 2)(line => (fileReceiver ? ProcessLine(line)).mapTo[Received.type])
+                .mapAsync(parallelism = 2)(line => (fileUploader ? ProcessLine(line)).mapTo[Received.type])
                 .map { e => println(e); e }
                 .runWith(Sink.ignore)
 
               val uploadedF = for {
                 _ <- processedF
-                uploaded <- (fileReceiver ? EndReceiving).mapTo[Uploaded.type]
+                uploaded <- (fileUploader ? EndReceiving).mapTo[Uploaded.type]
               } yield uploaded
 
               onComplete(uploadedF) {

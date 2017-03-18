@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
 import com.typesafe.config.ConfigFactory
 import common.CommonMessages.KillYourself
-import processing.{ FileProcessor, SampleActor }
+import processing.{ ProcessorManager, SampleActor }
 
 object BackendMain {
   def main(args: Array[String]): Unit = {
@@ -17,7 +17,7 @@ object BackendMain {
 
     system.actorOf(
       ClusterSingletonManager.props(
-        singletonProps = FileProcessor.props(),
+        singletonProps = ProcessorManager.props(),
         terminationMessage = KillYourself,
         settings = ClusterSingletonManagerSettings(system).withRole("backend")
       ), "file-processor"
