@@ -24,9 +24,9 @@ class FileProcessor extends Actor with ActorLogging {
     case SubscribeAck(Subscribe(topic, None, `self`)) ⇒
       log.info(s"Subscribed to $topic")
 
-    case msg: ProcessLine =>
-      log.info(msg.toString)
-      lineCount += 1
+//    case msg: ProcessLine =>
+//      log.info(msg.toString)
+//      lineCount += 1
 
     case KillYourself =>
       context stop self
