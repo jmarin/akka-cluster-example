@@ -4,17 +4,17 @@ import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
 import common.CommonMessages.{ EndReceiving, ProcessLine, Received, fileProcessingTopic }
 import akka.cluster.pubsub.DistributedPubSub
 import akka.cluster.pubsub.DistributedPubSubMediator.{ Publish, Send }
-import api.actors.FileReceiver.Uploaded
+import api.actors.FileUploader.Uploaded
 
-object FileReceiver {
+object FileUploader {
   case class Uploaded(lines: Int)
-  def props(): Props = Props(new FileReceiver)
+  def props(): Props = Props(new FileUploader)
   def createFileReceiver(system: ActorSystem): ActorRef = {
-    system.actorOf(FileReceiver.props())
+    system.actorOf(FileUploader.props())
   }
 }
 
-class FileReceiver extends Actor with ActorLogging {
+class FileUploader extends Actor with ActorLogging {
 
   val mediator = DistributedPubSub(context.system).mediator
 

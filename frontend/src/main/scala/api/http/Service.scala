@@ -16,7 +16,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.scaladsl.{ Framing, Sink }
 import akka.util.{ ByteString, Timeout }
 import api.actors.ClusterListener.GetState
-import api.actors.FileReceiver.Uploaded
+import api.actors.FileUploader.Uploaded
 import api.model.{ FileUploaded, NodeDetails, Status }
 import api.protocol.ApiProtocol
 import common.CommonMessages.{ EndReceiving, ProcessLine, Received }

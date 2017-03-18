@@ -6,7 +6,7 @@ import akka.event.{ Logging, LoggingAdapter }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
-import api.actors.{ ClusterListener, FileReceiver }
+import api.actors.{ ClusterListener, FileUploader }
 import api.http.{ HttpApi, Service }
 import com.typesafe.config.ConfigFactory
 
@@ -31,7 +31,7 @@ class FrontendApi extends HttpApi with Service {
 
   //Start up actors
   val clusterListener = system.actorOf(ClusterListener.props())
-  val fileReceiver = system.actorOf(FileReceiver.props())
+  val fileReceiver = system.actorOf(FileUploader.props())
 
   override val paths: Route = routes(s"$name", clusterListener, fileReceiver)
   override val http: Future[Http.ServerBinding] = Http(system).bindAndHandle(
