@@ -25,7 +25,7 @@ class ProcessorManager extends Actor with ActorLogging {
       log.info(s"Subscribed to $topic")
 
     case msg: StartProcessing =>
-      val processor = context.actorOf(FileProcessor.props(msg.fileId))
+      val processor = context.actorOf(FileProcessor.props(msg.fileId), msg.fileId)
       processors = processors + ((msg.fileId, processor))
 
     case msg: EndProcessing =>

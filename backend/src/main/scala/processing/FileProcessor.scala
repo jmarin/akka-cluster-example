@@ -14,6 +14,9 @@ object FileProcessor {
 
 class FileProcessor(fileId: String) extends Actor with ActorLogging {
 
+  var linesReceived = 0L
+  val linesProcessed = 0L
+
   val mediator = DistributedPubSub(context.system).mediator
   mediator ! Subscribe(fileProcessingTopic, self)
 
@@ -29,7 +32,8 @@ class FileProcessor(fileId: String) extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case processLine: ProcessLine =>
-      log.info(processLine.toString)
+      linesReceived += 1
+      log.info(linesReceived.toString)
 
     case KillYourself =>
       context stop self
