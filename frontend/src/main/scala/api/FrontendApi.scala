@@ -31,9 +31,8 @@ class FrontendApi extends HttpApi with Service {
 
   //Start up actors
   val clusterListener = system.actorOf(ClusterListener.props())
-  val fileReceiver = system.actorOf(FileUploader.props())
 
-  override val paths: Route = routes(s"$name", clusterListener, fileReceiver)
+  override val paths: Route = routes(s"$name", clusterListener)
   override val http: Future[Http.ServerBinding] = Http(system).bindAndHandle(
     paths,
     host,

@@ -1,7 +1,7 @@
 package api.actors
 
 import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
-import common.CommonMessages.{ EndReceiving, ProcessLine, Received, fileProcessingTopic }
+import common.CommonMessages.{ EndUpload, ProcessLine, Received, fileProcessingTopic }
 import akka.cluster.pubsub.DistributedPubSub
 import akka.cluster.pubsub.DistributedPubSubMediator.{ Publish, Send }
 import api.actors.FileUploader.Uploaded
@@ -23,7 +23,8 @@ class FileUploader extends Actor with ActorLogging {
       mediator ! Publish(fileProcessingTopic, line)
       sender() ! Received
 
-    case EndReceiving =>
+    case EndUpload =>
       sender() ! Uploaded
+      context stop self
   }
 }

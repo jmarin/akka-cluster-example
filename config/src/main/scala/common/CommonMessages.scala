@@ -5,7 +5,7 @@ object CommonMessages {
   case object GetState
   case object KillYourself
   case class ProcessLine(line: String)
-  case object EndReceiving
+  case object EndUpload
   case class WordStats(wordCount: Long)
   val fileProcessingTopic = "fileProcessing"
 }
