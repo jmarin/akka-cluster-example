@@ -19,7 +19,7 @@ import api.actors.ClusterListener.GetState
 import api.actors.FileUploader._
 import api.model.{ FileUploaded, NodeDetails, Status }
 import api.protocol.ApiProtocol
-import common.CommonMessages.{ EndUpload, ProcessLine, Received }
+import common.CommonMessages.{ EndProcessing, ProcessLine, Received, StartProcessing }
 
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }
@@ -51,7 +51,11 @@ trait Service extends ApiProtocol {
         path("upload") {
           fileUpload("file") {
             case (metadata, byteSource) =>
-              val fileUploader = createFileUploader(system)
+              val fileName = metadata.fileName
+              val now = Instant.now().toEpochMilli
+              val fileId = s"$fileName-$now"
+              val fileUploader = createFileUploader(system, fileId)
+              fileUploader ! StartProcessing(fileId)
               val processedF = byteSource
                 .via(splitLines)
                 .map(_.utf8String)
@@ -61,7 +65,7 @@ trait Service extends ApiProtocol {
 
               val uploadedF = for {
                 _ <- processedF
-                uploaded <- (fileUploader ? EndUpload).mapTo[Uploaded.type]
+                uploaded <- (fileUploader ? EndProcessing(fileId)).mapTo[Uploaded.type]
               } yield uploaded
 
               onComplete(uploadedF) {
