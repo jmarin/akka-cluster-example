@@ -55,13 +55,10 @@ trait Service extends ApiProtocol {
                 .via(splitLines)
                 .map(_.utf8String)
                 .mapAsync(parallelism = 2)(line => (mediator ? Send("/user/word-counter", ProcessLine(line), false)).mapTo[Int])
-                .map { e => println(e); e }
                 .runWith(Sink.fold[Int, Int](0) { (acc, x) => acc + x })
-              //.runWith(Sink.ignore)
 
               onComplete(uploadedF) {
                 case Success(total) =>
-                  println(s"TOTAL: $total")
                   complete(ToResponseMarshallable(FileUploaded(metadata.fileName, total)))
                 case Failure(error) =>
                   log.error(error.getLocalizedMessage)
