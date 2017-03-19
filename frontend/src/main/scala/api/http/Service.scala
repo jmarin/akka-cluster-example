@@ -51,6 +51,7 @@ trait Service extends ApiProtocol {
         path("upload") {
           fileUpload("file") {
             case (metadata, byteSource) =>
+              val startTime = Instant.now().toEpochMilli
               val uploadedF = byteSource
                 .via(splitLines)
                 .map(_.utf8String)
@@ -59,7 +60,9 @@ trait Service extends ApiProtocol {
 
               onComplete(uploadedF) {
                 case Success(total) =>
-                  complete(ToResponseMarshallable(FileUploaded(metadata.fileName, total)))
+                  val endTime = Instant.now().toEpochMilli
+                  val time = endTime - startTime
+                  complete(ToResponseMarshallable(FileUploaded(metadata.fileName, total, time.toInt)))
                 case Failure(error) =>
                   log.error(error.getLocalizedMessage)
                   complete(HttpResponse(StatusCodes.InternalServerError))

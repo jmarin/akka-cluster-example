@@ -83,9 +83,10 @@
 
       var fileName = data.name;
       var wordCount = data.wordCount;
+      var time = data.time;
       $(".list-group")
         .empty()
-        .append("<a href='#' class='list-group-item list-group-item-success'><span class='badge alert-success pull-right'>Number of Words: " + wordCount + "</span>" + fileName + "</a>")
+        .append("<a href='#' class='list-group-item list-group-item-success'><span class='badge alert-success pull-right'>Number of Words: " + wordCount + " (" + time + " ms)</span>" + fileName + "</a>")
 
     }
 
