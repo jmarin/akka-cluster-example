@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
 import com.typesafe.config.ConfigFactory
 import common.CommonMessages.KillYourself
-import processing.{ ProcessorManager, SampleActor }
+import processing.{ ProcessorManager, SampleActor, WordCounter }
 
 object BackendMain {
   def main(args: Array[String]): Unit = {
@@ -14,6 +14,8 @@ object BackendMain {
     val system = ActorSystem(actorSystemName, config)
     val actor = system.actorOf(SampleActor.props(), "sample-actor")
     actor ! "Hello Backend"
+
+    system.actorOf(WordCounter.props(), "word-counter")
 
     system.actorOf(
       ClusterSingletonManager.props(

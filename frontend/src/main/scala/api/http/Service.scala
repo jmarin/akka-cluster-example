@@ -32,7 +32,7 @@ trait Service extends ApiProtocol {
   implicit val ec: ExecutionContext
   val log: LoggingAdapter
 
-  implicit val timeout: Timeout = Timeout(5.seconds)
+  implicit val timeout: Timeout = Timeout(30.seconds)
 
   val splitLines = Framing.delimiter(ByteString("\n"), 2048, allowTruncation = true)
 
@@ -63,12 +63,12 @@ trait Service extends ApiProtocol {
                 .map { e => println(e); e }
                 .runWith(Sink.ignore)
 
-              val uploadedF = for {
-                _ <- processedF
-                uploaded <- (fileUploader ? EndProcessing(fileId)).mapTo[Uploaded.type]
-              } yield uploaded
+//              val uploadedF = for {
+//                _ <- processedF
+//                uploaded <- (fileUploader ? EndProcessing).mapTo[Uploaded.type]
+//              } yield uploaded
 
-              onComplete(uploadedF) {
+              onComplete(processedF) {
                 case Success(uploaded) =>
                   println(uploaded)
                   complete(ToResponseMarshallable(FileUploaded(metadata.fileName)))

@@ -1,7 +1,9 @@
 package processing
 
 import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
-import common.CommonMessages.{ ProcessLine, WordStats }
+import akka.cluster.pubsub.DistributedPubSub
+import akka.cluster.pubsub.DistributedPubSubMediator.{ Publish, Subscribe }
+import common.CommonMessages.{ CountWords, WordStats, fileProcessingTopic }
 
 object WordCounter {
   def props(): Props = Props(new WordCounter)
@@ -11,9 +13,14 @@ object WordCounter {
 }
 
 class WordCounter extends Actor with ActorLogging {
+
+  val mediator = DistributedPubSub(context.system).mediator
+  mediator ! Subscribe(fileProcessingTopic, self)
+
   override def receive: Receive = {
-    case ProcessLine(line) =>
+    case CountWords(line) =>
       val words = line.split(" ").length
-      sender() ! WordStats(words)
+      log.info(s"Counting words: $words")
+      mediator ! Publish(fileProcessingTopic, WordStats(words))
   }
 }

@@ -6,7 +6,6 @@ import akka.cluster.pubsub.DistributedPubSub
 import akka.cluster.pubsub.DistributedPubSubMediator.{ Subscribe, SubscribeAck }
 
 object ProcessorManager {
-  case class FileDetails(lineCount: Int)
   def props(): Props = Props(new ProcessorManager)
   def createFileProcessor(system: ActorSystem): ActorRef = {
     system.actorOf(ProcessorManager.props())

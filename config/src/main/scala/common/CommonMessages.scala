@@ -7,6 +7,10 @@ object CommonMessages {
   case class ProcessLine(line: String)
   case class StartProcessing(fileId: String)
   case class EndProcessing(fileId: String)
+  case class CountWords(line: String)
   case class WordStats(wordCount: Long)
+  case class TotalWordCount(fileId: String, count: Long)
+  case class FileDetails(fileName: String, wordCount: Long)
   val fileProcessingTopic = "fileProcessing"
+  val fileResultsTopic = "fileResults"
 }
