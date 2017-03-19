@@ -60,17 +60,17 @@ trait Service extends ApiProtocol {
                 .via(splitLines)
                 .map(_.utf8String)
                 .mapAsync(parallelism = 2)(line => (fileUploader ? ProcessLine(line)).mapTo[Received.type])
-                .map { e => println(e); e }
+                //.map { e => println(e); e }
                 .runWith(Sink.ignore)
 
-//              val uploadedF = for {
-//                _ <- processedF
-//                uploaded <- (fileUploader ? EndProcessing).mapTo[Uploaded.type]
-//              } yield uploaded
+              val uploadedF = for {
+                _ <- processedF
+                uploaded <- (fileUploader ? EndProcessing(fileId)).mapTo[Uploaded.type]
+              } yield uploaded
 
-              onComplete(processedF) {
+              onComplete(uploadedF) {
                 case Success(uploaded) =>
-                  println(uploaded)
+                  //println(uploaded)
                   complete(ToResponseMarshallable(FileUploaded(metadata.fileName)))
                 case Failure(error) =>
                   log.error(error.getLocalizedMessage)

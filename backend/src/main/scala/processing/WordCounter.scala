@@ -3,7 +3,7 @@ package processing
 import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
 import akka.cluster.pubsub.DistributedPubSub
 import akka.cluster.pubsub.DistributedPubSubMediator.{ Publish, Subscribe }
-import common.CommonMessages.{ CountWords, WordStats, fileProcessingTopic }
+import common.CommonMessages.{ CountWords, WordStats, fileProcessingTopic, fileResultsTopic }
 
 object WordCounter {
   def props(): Props = Props(new WordCounter)
@@ -20,7 +20,7 @@ class WordCounter extends Actor with ActorLogging {
   override def receive: Receive = {
     case CountWords(line) =>
       val words = line.split(" ").length
-      log.info(s"Counting words: $words")
-      mediator ! Publish(fileProcessingTopic, WordStats(words))
+      //log.info(s"Counting words: $words")
+      mediator ! Publish(fileResultsTopic, WordStats(words))
   }
 }

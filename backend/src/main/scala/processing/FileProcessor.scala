@@ -6,17 +6,13 @@ import akka.cluster.pubsub.DistributedPubSubMediator.{ Publish, Subscribe }
 import common.CommonMessages._
 
 object FileProcessor {
-  def props(fileName: String): Props = Props(new FileProcessor(fileName))
-  def createFileProcessor(system: ActorSystem, fileName: String): ActorRef = {
-    system.actorOf(FileProcessor.props(fileName))
+  def props(fileName: String, aggregator: ActorRef): Props = Props(new FileProcessor(fileName, aggregator))
+  def createFileProcessor(system: ActorSystem, fileName: String, aggregator: ActorRef): ActorRef = {
+    system.actorOf(FileProcessor.props(fileName, aggregator))
   }
 }
 
-class FileProcessor(fileId: String) extends Actor with ActorLogging {
-
-  var linesReceived = 0L
-  var linesProcessed = 0L
-  var totalWordCount = 0L
+class FileProcessor(fileId: String, aggregator: ActorRef) extends Actor with ActorLogging {
 
   val mediator = DistributedPubSub(context.system).mediator
   mediator ! Subscribe(fileProcessingTopic, self)
@@ -32,24 +28,12 @@ class FileProcessor(fileId: String) extends Actor with ActorLogging {
   }
 
   override def receive: Receive = {
-    case ProcessLine(line) =>
-      linesReceived += 1
-      log.debug(s"LINES RECEIVED: ${linesReceived.toString}")
-      mediator ! Publish(fileProcessingTopic, CountWords(line))
-
-    case wordStats: WordStats =>
-      linesProcessed += 1
-      log.debug(s"LINES PROCESSED: ${linesProcessed.toString}")
-      totalWordCount += wordStats.wordCount
-      checkPublishResults()
+    case msg: ProcessLine =>
+      mediator ! Publish(fileProcessingTopic, CountWords(msg.line))
+      aggregator ! msg
 
     case KillYourself =>
       context stop self
   }
 
-  private def checkPublishResults(): Unit = {
-    if (linesReceived == linesProcessed) {
-      mediator ! Publish(fileResultsTopic, TotalWordCount(fileId, totalWordCount))
-    }
-  }
 }

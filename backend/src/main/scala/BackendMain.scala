@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
 import com.typesafe.config.ConfigFactory
 import common.CommonMessages.KillYourself
-import processing.{ ProcessorManager, SampleActor, WordCounter }
+import processing.{ ProcessorManager, SampleActor, WordCountAggregator, WordCounter }
 
 object BackendMain {
   def main(args: Array[String]): Unit = {
@@ -16,10 +16,11 @@ object BackendMain {
     actor ! "Hello Backend"
 
     system.actorOf(WordCounter.props(), "word-counter")
+    val aggregator = system.actorOf(WordCountAggregator.props(), "word-count-aggregator")
 
     system.actorOf(
       ClusterSingletonManager.props(
-        singletonProps = ProcessorManager.props(),
+        singletonProps = ProcessorManager.props(aggregator),
         terminationMessage = KillYourself,
         settings = ClusterSingletonManagerSettings(system).withRole("backend")
       ), "file-processor"

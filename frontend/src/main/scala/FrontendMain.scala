@@ -2,6 +2,7 @@ package cluster
 
 import akka.actor.ActorSystem
 import api.FrontendApi
+import api.actors.ResultsWebSocket
 import com.typesafe.config.ConfigFactory
 
 object FrontendMain {
@@ -11,5 +12,6 @@ object FrontendMain {
     val actorSystemName = config.getString("cluster.name")
     val system = ActorSystem(actorSystemName, config)
     system.actorOf(FrontendApi.props(), "frontend-api")
+    system.actorOf(ResultsWebSocket.props(), "wordcount-results")
   }
 }

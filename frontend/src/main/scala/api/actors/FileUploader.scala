@@ -2,8 +2,8 @@ package api.actors
 
 import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
 import akka.cluster.pubsub.DistributedPubSub
-import akka.cluster.pubsub.DistributedPubSubMediator.{ Publish, Subscribe }
-import api.actors.FileUploader.{ CheckStatus, Uploaded }
+import akka.cluster.pubsub.DistributedPubSubMediator.Publish
+import api.actors.FileUploader.Uploaded
 import common.CommonMessages._
 
 object FileUploader {
@@ -21,7 +21,6 @@ class FileUploader(fileId: String) extends Actor with ActorLogging {
   var isProcessed = false
 
   val mediator = DistributedPubSub(context.system).mediator
-  mediator ! Subscribe(fileResultsTopic, self)
 
   override def receive: Receive = {
 
@@ -29,11 +28,11 @@ class FileUploader(fileId: String) extends Actor with ActorLogging {
       mediator ! Publish(fileProcessingTopic, startProcessing)
 
     case processLine: ProcessLine =>
-      //mediator ! Publish(fileProcessingTopic, processLine)
+      mediator ! Publish(fileProcessingTopic, processLine)
       sender() ! Received
 
     case msg: EndProcessing =>
-      //mediator ! Publish(fileProcessingTopic, msg)
+      mediator ! Publish(fileProcessingTopic, msg)
       sender() ! Uploaded
       context stop self
 
