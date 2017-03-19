@@ -21,7 +21,7 @@ class WordCounter extends Actor with ActorLogging {
   override def receive: Receive = {
     case msg: ProcessLine =>
       val words = msg.line.split(" ").length
-      log.debug(s"Counting words: $words")
+      log.info(s"Counting words: $words")
       sender() ! words
   }
 }
