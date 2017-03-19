@@ -49,6 +49,7 @@ lazy val seed = (project in file("seed"))
 
 lazy val web = (project in file("web"))
   .enablePlugins(ScalaJSPlugin)
+  .disablePlugins(sbtassembly.AssemblyPlugin)
   .settings(clusterBuildSettings)
   .settings(
     Seq(
