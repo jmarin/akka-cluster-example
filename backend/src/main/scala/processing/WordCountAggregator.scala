@@ -29,15 +29,24 @@ class WordCountAggregator extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case msg: ProcessLine =>
+      fileId = msg.fileId
       linesReceived += 1
 
     case wordStats: WordStats =>
       linesProcessed += 1
       totalWordCount += wordStats.wordCount
       if (linesProcessed == linesReceived) {
-        println(s"Total Count: $totalWordCount")
+        println(s"publishing: $totalWordCount")
         mediator ! Publish(fileResultsTopic, TotalWordCount(fileId, totalWordCount))
+        clearStats()
       }
 
+  }
+
+  private def clearStats(): Unit = {
+    linesReceived = 0L
+    linesProcessed = 0L
+    totalWordCount = 0L
+    fileId = ""
   }
 }

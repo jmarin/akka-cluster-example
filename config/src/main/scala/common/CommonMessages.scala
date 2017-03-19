@@ -4,7 +4,7 @@ object CommonMessages {
   case object Received
   case object GetState
   case object KillYourself
-  case class ProcessLine(line: String)
+  case class ProcessLine(line: String, fileId: String)
   case class StartProcessing(fileId: String)
   case class EndProcessing(fileId: String)
   case class CountWords(line: String)

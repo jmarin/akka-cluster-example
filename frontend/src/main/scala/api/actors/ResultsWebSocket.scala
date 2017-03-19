@@ -25,10 +25,6 @@ class ResultsWebSocket extends Actor with ActorLogging {
     case msg: EndProcessing =>
       fileId = msg.fileId
 
-    //    case msg: WordStats =>
-    //      totalWordCount += msg.wordCount
-    //      self ! TotalWordCount(fileId, totalWordCount)
-
     case msg: TotalWordCount =>
       log.info(msg.toString)
 

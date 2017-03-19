@@ -59,7 +59,7 @@ trait Service extends ApiProtocol {
               val processedF = byteSource
                 .via(splitLines)
                 .map(_.utf8String)
-                .mapAsync(parallelism = 2)(line => (fileUploader ? ProcessLine(line)).mapTo[Received.type])
+                .mapAsync(parallelism = 2)(line => (fileUploader ? ProcessLine(line, fileId)).mapTo[Received.type])
                 //.map { e => println(e); e }
                 .runWith(Sink.ignore)
 
