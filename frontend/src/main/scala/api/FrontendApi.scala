@@ -1,6 +1,7 @@
 package api
 
 import akka.actor.{ ActorSystem, Props }
+import akka.cluster.pubsub.DistributedPubSub
 import akka.pattern.pipe
 import akka.event.{ Logging, LoggingAdapter }
 import akka.http.scaladsl.Http
@@ -33,7 +34,9 @@ class FrontendApi extends HttpApi with Service {
   val clusterListener = system.actorOf(ClusterListener.props())
   val fileReceiver = system.actorOf(FileReceiver.props())
 
-  override val paths: Route = routes(s"$name", clusterListener, fileReceiver)
+  val mediator = DistributedPubSub(system).mediator
+
+  override val paths: Route = routes(s"$name", clusterListener, mediator)
   override val http: Future[Http.ServerBinding] = Http(system).bindAndHandle(
     paths,
     host,

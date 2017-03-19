@@ -5,6 +5,7 @@ import java.time.Instant
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.cluster.Member
+import akka.cluster.pubsub.DistributedPubSubMediator.Send
 import akka.pattern.ask
 import akka.event.LoggingAdapter
 import akka.http.scaladsl.marshalling.ToResponseMarshallable
@@ -35,7 +36,7 @@ trait Service extends ApiProtocol {
 
   val splitLines = Framing.delimiter(ByteString("\n"), 2048, allowTruncation = true)
 
-  def rootPath(fileReceiver: ActorRef) = {
+  def rootPath(mediator: ActorRef) = {
     get {
       pathSingleSlash {
         getFromResource("web/index.html")
@@ -53,7 +54,8 @@ trait Service extends ApiProtocol {
               val uploadedF = byteSource
                 .via(splitLines)
                 .map(_.utf8String)
-                .mapAsync(parallelism = 2)(line => (fileReceiver ? ProcessLine(line)).mapTo[Received.type])
+                .mapAsync(parallelism = 2)(line => (mediator ? Send("/user/word-counter", ProcessLine(line), false)).mapTo[Int])
+                .map { e => println(e); e }
                 .runWith(Sink.ignore)
 
               onComplete(uploadedF) {
