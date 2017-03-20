@@ -1,12 +1,13 @@
 package api
 
 import akka.actor.{ ActorSystem, Props }
+import akka.cluster.pubsub.DistributedPubSub
 import akka.pattern.pipe
 import akka.event.{ Logging, LoggingAdapter }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
-import api.actors.ClusterListener
+import api.actors.{ ClusterListener, FileReceiver }
 import api.http.{ HttpApi, Service }
 import com.typesafe.config.ConfigFactory
 
@@ -29,9 +30,13 @@ class FrontendApi extends HttpApi with Service {
   override implicit val materializer: ActorMaterializer = ActorMaterializer()
   override implicit val ec: ExecutionContext = context.dispatcher
 
+  //Start up actors
   val clusterListener = system.actorOf(ClusterListener.props())
+  val fileReceiver = system.actorOf(FileReceiver.props())
 
-  override val paths: Route = routes(s"$name", clusterListener)
+  val mediator = DistributedPubSub(system).mediator
+
+  override val paths: Route = routes(s"$name", clusterListener, mediator)
   override val http: Future[Http.ServerBinding] = Http(system).bindAndHandle(
     paths,
     host,
