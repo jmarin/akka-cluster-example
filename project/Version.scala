@@ -4,4 +4,6 @@ object Version {
   val logback = "1.2.1"
   val akkaVersion = "2.4.17"
   val akkaHttpVersion = "10.0.4"
+  val constructrVersion = "0.17.0"
+  val constructrZookeeperVersion = "0.3.3"
 }

@@ -16,5 +16,7 @@ object Dependencies {
   val akkaHttp = "com.typesafe.akka" %% "akka-http" % Version.akkaHttpVersion
   val akkaHttpJson = "com.typesafe.akka" %% "akka-http-spray-json" % Version.akkaHttpVersion
   val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % Version.akkaVersion % "test"
+  val constructr = "de.heikoseeberger" %% "constructr" % Version.constructrVersion
+  val constructrZookeeper = "com.lightbend.constructr" %% "constructr-coordination-zookeeper" % Version.constructrZookeeperVersion
 
 }
