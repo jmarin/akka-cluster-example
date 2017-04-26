@@ -6,7 +6,7 @@ import BuildSettings._
 import Dependencies._
 
 
-val clusterDeps = Seq(akkaCluster, akkaPubSub)
+val clusterDeps = Seq(akkaCluster, akkaPubSub, constructr, constructrZookeeper)
 val testDeps = Seq(scalaTest, scalaCheck, akkaTestkit)
 
 lazy val akkaClusterExample = (project in file("."))

@@ -4,29 +4,31 @@ services:
     build: seed
     ports:
       - "2552:2552"
+    depends_on:
+      - zookeeper
     environment:
-      CLUSTER_IP: 192.168.99.100
-      APP_PORT: 2552
-      BIND_HOSTNAME: 0.0.0.0
-      #SEED_PORT_1600_TCP_ADDR: seed
+      ZOOKEEPER_HOST: zookeeper
+      ZOOKEEPER_PORT: 2181
 
   frontend:
     build: frontend
     ports:
       - '8080:8080'
-      - '2553:2553'
+    depends_on:
+      - seed
     environment:
-      CLUSTER_IP: 192.168.99.100
-      APP_PORT: 2553
-      BIND_HOSTNAME: 0.0.0.0
-      #SEED_PORT_1600_TCP_ADDR: seed
+      ZOOKEEPER_HOST: zookeeper
+      ZOOKEEPER_PORT: 2181
 
   backend:
     build: backend
-    ports:
-      - '2554:2554'
+    depends_on:
+      - seed
     environment:
-      CLUSTER_IP: 192.168.99.100
-      APP_PORT: 2554
-      BIND_HOSTNAME: 0.0.0.0
-      #SEED_PORT_1600_TCP_ADDR: seed
+      ZOOKEEPER_HOST: zookeeper
+      ZOOKEEPER_PORT: 2181
+
+  zookeeper:
+    image: jplock/zookeeper
+    ports:
+      - '2181:2181'
