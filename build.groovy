@@ -4,7 +4,7 @@ node('') {
     def project_root_name = "akka-cluster-example"
 
     stage('Git') {
-        git 'https://github.com/jmarin/akka-cluster-example.git'
+        git 'https://github.com/jmarin/akka-cluster-example.git:test'
     }
 
     stage('Scala Build') {
