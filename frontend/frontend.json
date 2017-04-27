@@ -10,9 +10,6 @@
     "type": "DOCKER",
     "docker": {
       "image": "jmarin/akka-cluster-example-frontend:latest",
-      "parameters": [
-        { "key": "add-host", "value": "dockerhost:172.17.42.1" }
-      ],
       "forcePullImage": true,
       "network": "BRIDGE",
       "portMappings": [
@@ -20,14 +17,17 @@
           "containerPort": 8080,
           "hostPort": 0,
           "servicePort": 10080,
-          "protocol": "tcp"
+          "protocol": "tcp",
+          "labels": {
+            "VIP_0": "/akka-cluster-example-frontend:8080"
+          }
         }
       ]
     }
   },
   "env": {
-    "CLUSTER_IP": "dockerhost",
-    "BIND_HOSTNAME": "0.0.0.0"
+    "ZOOKEEPER_HOST": "exhibitor-dcos.marathon.mesos",
+    "ZOOKEEPER_PORT": 31866
   },
   "labels": {
     "HAPROXY_GROUP": "internal"
