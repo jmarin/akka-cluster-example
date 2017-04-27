@@ -14,9 +14,9 @@ node('') {
 
     docker.withRegistry('', 'dtr') {
       stage('Docker Build') {
-          sh "cp seed/target/scala-2.12/seed.jar target/scala-2.12/seed.jar"
-          sh "cp frontend/target/scala-2.12/frontend.jar target/scala-2.12/frontend.jar"
-          sh "cp backend/target/scala-2.12/backend.jar target/scala-2.12/backend.jar"
+          //sh "cp seed/target/scala-2.12/seed.jar target/scala-2.12/seed.jar"
+          //sh "cp frontend/target/scala-2.12/frontend.jar target/scala-2.12/frontend.jar"
+          //sh "cp backend/target/scala-2.12/backend.jar target/scala-2.12/backend.jar"
 
           def seedName = "seed"
           def frontendName = "frontend"
