@@ -1,0 +1,32 @@
+{
+  "id": "akka-cluster-example-backend",
+  "mem": 275,
+  "cpus": 1,
+  "instances": 1,
+  "cmd": "jre*/bin/java -Xmx256m -jar backend.jar",
+  "fetch": [
+    {
+      "uri": "https://downloads.mesosphere.com/java/jre-8u121-linux-x64.tar.gz",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    },
+    {
+      "uri": "https://github.com/jmarin/akka-cluster-example/releases/download/v1.1/backend.jar",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    }
+  ],
+  "env": {
+    "SEED_PORT": "10052",
+    "ZOOKEEPER_HOST": "10.153.98.67",
+    "ZOOKEEPER_PORT": "31886",
+    "CLUSTER_IP": "akka-cluster-example-backend.marathon.mesos"
+  },
+  "labels": {
+    "HAPROXY_GROUP": "internal"
+  }
+
+}
+

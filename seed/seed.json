@@ -1,0 +1,39 @@
+{
+  "id": "akka-cluster-example-seed",
+  "mem": 275,
+  "cpus": 1,
+  "instances": 1,
+  "cmd": "jre*/bin/java -Xmx256m -jar seed.jar",
+  "fetch": [
+    {
+      "uri": "https://downloads.mesosphere.com/java/jre-8u121-linux-x64.tar.gz",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    },
+    {
+      "uri": "https://github.com/jmarin/akka-cluster-example/releases/download/v1.1/seed.jar",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    }
+  ],
+  "env": {
+    "APP_PORT": "10052",
+    "SEED_PORT": "10052",
+    "ZOOKEEPER_HOST": "10.153.98.67",
+    "ZOOKEEPER_PORT": "31886",
+    "CLUSTER_IP": "akka-cluster-example-seed.marathon.mesos"
+  },
+  "labels": {
+    "HAPROXY_GROUP": "internal"	
+  },
+  "portDefinitions": [
+    {
+      "protocol": "tcp",
+      "port": 10052
+    }
+  ],
+  "requirePorts": false
+
+}
