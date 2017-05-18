@@ -20,7 +20,7 @@
   ],
   "env": {
     "SEED_PORT": "10052",
-    "ZOOKEEPER_HOST": "10.153.98.67",
+    "ZOOKEEPER_HOST": "exhibitor-dcos.marathon.mesos",
     "ZOOKEEPER_PORT": "31886",
     "CLUSTER_IP": "akka-cluster-example-backend.marathon.mesos"
   },
